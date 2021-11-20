@@ -1,0 +1,8 @@
+<form>
+  <mat-form-field appearance="fill">
+    <mat-label>Login</mat-label>
+    <input [formControl]="control" matInput placeholder="TarasovMV">
+    <mat-error *ngIf="!!control.errors">Min length is 3 characters</mat-error>
+  </mat-form-field>
+  <button (click)="submit($event)" mat-raised-button color="primary">Search</button>
+</form>
