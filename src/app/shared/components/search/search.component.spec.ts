@@ -5,6 +5,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {ChangeDetectionStrategy} from '@angular/core';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;
@@ -19,8 +20,9 @@ describe('SearchComponent', () => {
         MatButtonModule,
         ReactiveFormsModule,
       ]
-    })
-    .compileComponents();
+    }).overrideComponent(SearchComponent, {
+      set: {  changeDetection: ChangeDetectionStrategy.Default  }
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -33,7 +35,7 @@ describe('SearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should check show error validation message', () => {
+  it('should check show error validation message', async () => {
     const compiled = fixture.nativeElement as HTMLElement;
     component.submit({preventDefault: () => {return}} as MouseEvent);
     fixture.detectChanges();

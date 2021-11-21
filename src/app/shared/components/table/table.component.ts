@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Inject, Input, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatPaginatorIntl} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {combineLatest, Subject} from 'rxjs';
+import {combineLatest, Subject, tap} from 'rxjs';
 import {debounceTime, filter, startWith, takeUntil} from 'rxjs/operators';
 
-import {TableDataSource, MatPaginatorIntlCount} from '@core/classes';
+import {MatPaginatorIntlCount, TableDataSource} from '@core/classes';
 import {PAGE_SIZE} from '@core/constants';
 import {TableSortField} from '@core/models';
 import {DestroyService} from '@core/services';
@@ -22,6 +22,7 @@ import {IGithubApi} from '@core/models/github-api.interface';
     },
     DestroyService,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
@@ -53,11 +54,9 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.sort.sortChange.pipe(takeUntil(this.destroy$)).subscribe(() => this.paginator.firstPage());
-
     combineLatest([
       this.paginator.page.pipe(startWith(0)),
-      this.sort.sortChange.pipe(startWith({})),
+      this.sort.sortChange.pipe(startWith({}), tap(() => this.paginator.firstPage())),
     ]).pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => this.load$.next(true));

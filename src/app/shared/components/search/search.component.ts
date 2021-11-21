@@ -1,4 +1,4 @@
-import {Component, forwardRef, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, forwardRef, OnInit} from '@angular/core';
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
 
 @Component({
@@ -10,6 +10,7 @@ import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, Validators} from '
     useExisting: forwardRef(() => SearchComponent),
     multi: true,
   }],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit, ControlValueAccessor {
   public readonly control: FormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
